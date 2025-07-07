@@ -2,7 +2,7 @@
 <html lang="no">
 <head><meta charset="utf-8"><title>Bilsøk Vercel</title></head>
 <body>
-  <h1>Søk biltype (EV12506)</h1>
+  <h1>Søk biltype</h1>
   <input id="regnr" placeholder="EV12506" />
   <button onclick="søk()">Søk</button>
   <pre id="resultat"></pre>
@@ -16,13 +16,8 @@
       try {
         const resp = await fetch(`/api/bilinfo?regnr=${regnr}`);
         const data = await resp.json();
-
         if (data.error) throw new Error(data.error);
-        ut.textContent = JSON.stringify({
-          merke: data.make,
-          modell: data.model,
-          type: data.body_type
-        }, null, 2);
+        ut.textContent = JSON.stringify(data, null, 2);
       } catch (e) {
         ut.textContent = 'Feil: ' + e.message;
       }
