@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="no">
-<head><meta charset="utf-8"><title>Regnr.no biltype-søk</title></head>
+<head><meta charset="utf-8"><title>Bilsøk Vercel</title></head>
 <body>
-  <h1>Søk biltype via Regnr.no</h1>
-  <input id="regnr" placeholder="EV12506" maxlength="7">
+  <h1>Søk biltype (EV12506)</h1>
+  <input id="regnr" placeholder="EV12506" />
   <button onclick="søk()">Søk</button>
   <pre id="resultat"></pre>
 
@@ -14,17 +14,18 @@
       ut.textContent = 'Laster...';
 
       try {
-        const proxy = 'https://cors-anywhere.herokuapp.com/';
-        const url = `https://regnr.no/${regnr}.json`;
-        const resp = await fetch(proxy + url);
-        if (!resp.ok) throw new Error(resp.status);
+        const resp = await fetch(`/bilinfo?regnr=${regnr}`);
         const data = await resp.json();
+
+        if (data.error) throw new Error(data.error);
         ut.textContent = JSON.stringify({
           merke: data.make,
           modell: data.model,
           type: data.body_type
         }, null, 2);
-      } catch (e) { ut.textContent = 'Feil: ' + e; }
+      } catch (e) {
+        ut.textContent = 'Feil: ' + e.message;
+      }
     }
   </script>
 </body>
