@@ -14,7 +14,7 @@
       ut.textContent = 'Laster...';
 
       try {
-        const resp = await fetch(`/bilinfo?regnr=${regnr}`);
+        const resp = await fetch(`/api/bilinfo?regnr=${regnr}`);
         const data = await resp.json();
 
         if (data.error) throw new Error(data.error);
