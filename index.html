@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="utf-8">
+  <title>Bilsøk Norge</title>
+</head>
+<body>
+  <h1>Søk biltype (Norge)</h1>
+  <input id="regnr" placeholder="AB12345" maxlength="7" />
+  <button id="btn">Søk</button>
+  <pre id="resultat"></pre>
+
+  <script>
+    document.getElementById('btn').addEventListener('click', async () => {
+      const regnr = document.getElementById('regnr').value.trim().toUpperCase();
+      const ut = document.getElementById('resultat');
+      ut.textContent = 'Laster…';
+
+      try {
+        const resp = await fetch(`https://api.store.norway-api/difi-api/vehicle-make-api?regno=${encodeURIComponent(regnr)}`);
+        if (!resp.ok) throw new Error(resp.status + ' ' + resp.statusText);
+        const data = await resp.json();
+        // Forventet felter i JSON: make, model, type
+        ut.textContent = JSON.stringify({
+          merke: data.make,
+          modell: data.model,
+          type: data.type
+        }, null, 2);
+      } catch (e) {
+        ut.textContent = 'Feil: ' + e;
+      }
+    });
+  </script>
+</body>
+</html>
