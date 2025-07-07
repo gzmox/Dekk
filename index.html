@@ -1,34 +1,31 @@
 <!DOCTYPE html>
 <html lang="no">
-<head>
-  <meta charset="utf-8">
-  <title>Bilsøk Norge (gratis)</title>
-</head>
+<head><meta charset="utf-8"><title>Regnr.no biltype-søk</title></head>
 <body>
-  <h1>Søk biltype (gratis, Norge)</h1>
-  <input id="regnr" placeholder="EV*****" maxlength="7" />
-  <button id="btn">Søk</button>
+  <h1>Søk biltype via Regnr.no</h1>
+  <input id="regnr" placeholder="EV12506" maxlength="7">
+  <button onclick="søk()">Søk</button>
   <pre id="resultat"></pre>
 
   <script>
-    document.getElementById('btn').addEventListener('click', async () => {
+    async function søk() {
       const regnr = document.getElementById('regnr').value.trim().toUpperCase();
       const ut = document.getElementById('resultat');
-      ut.textContent = 'Laster…';
+      ut.textContent = 'Laster...';
 
       try {
-        const resp = await fetch(`https://api.store.norway-api/difi-api/vehicle-make-api?regno=${encodeURIComponent(regnr)}`);
-        if (!resp.ok) throw new Error(resp.status + ' ' + resp.statusText);
+        const proxy = 'https://cors-anywhere.herokuapp.com/';
+        const url = `https://regnr.no/${regnr}.json`;
+        const resp = await fetch(proxy + url);
+        if (!resp.ok) throw new Error(resp.status);
         const data = await resp.json();
         ut.textContent = JSON.stringify({
           merke: data.make,
           modell: data.model,
-          type: data.type
+          type: data.body_type
         }, null, 2);
-      } catch (e) {
-        ut.textContent = 'Feil: ' + e;
-      }
-    });
+      } catch (e) { ut.textContent = 'Feil: ' + e; }
+    }
   </script>
 </body>
 </html>
